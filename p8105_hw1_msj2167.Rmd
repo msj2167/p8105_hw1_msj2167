@@ -5,7 +5,40 @@ date: "2026-09-24"
 output: github_document
 ---
 
-```{r}
+Loading libraries 
 
+```{r message = F}
+library(tidyverse)
 ```
+
+## Problem 1: 
+
+### Data set description
+
+To do this problem, I must load the tidyverse library and the penguins dataset
+
+```{r}
+data("penguins", package = "palmerpenguins")
+```
+
+The penguins data set has `r nrow(penguins)` rows and `r ncol(penguins)` columns. Each row is one penguin and the variables are `r names(penguins)`. 
+
+Penguins were observed in one of three islands `r levels(penguins$island)` and belong to one of three species `r levels(penguins$species)`. They were seen between `r min(penguins$year)` and `r max(penguins$year)`. The physical measurements of penguins were recorded and included bill length and depth (mm), flipper length (mm), and body mass(g). The sex of the penguins were also recorded. 
+
+The mean flipper length is
+`r round(mean(pull(penguins, flipper_length_mm), na.rm = TRUE), 2)`
+
+### Visualization of the dataset
+
+Creating a scatterplot of bill length (x) and flipper length (y) by species 
+
+```{r penguin_scatterplot, message = FALSE, warning = FALSE}
+ggplot(penguins, aes(x = bill_length_mm, y = flipper_length_mm, colour = species)) +
+  geom_point()
+
+ggsave("penguin_scatterplot.png")
+```
+
+
+
 
