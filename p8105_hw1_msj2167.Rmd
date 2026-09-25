@@ -23,7 +23,7 @@ data("penguins", package = "palmerpenguins")
 
 The penguins data set has `r nrow(penguins)` rows and `r ncol(penguins)` columns. Each row is one penguin and the variables are `r names(penguins)`. 
 
-Penguins were observed in one of three islands `r levels(penguins$island)` and belong to one of three species `r levels(penguins$species)`. They were seen between `r min(penguins$year)` and `r max(penguins$year)`. The physical measurements of penguins were recorded and included bill length and depth (mm), flipper length (mm), and body mass(g). The sex of the penguins were also recorded. 
+Penguins were observed in one of three islands `r levels(pull(penguins, island))` and belong to one of three species `r levels(pull(penguins, species))`. They were seen between `r min(pull(penguins, year))` and `r max(pull(penguins, year))`. The physical measurements of penguins were recorded and included bill length and depth(mm), flipper length(mm), and body mass(g). The sex of the penguins were also recorded. 
 
 The mean flipper length is
 `r round(mean(pull(penguins, flipper_length_mm), na.rm = TRUE), 2)`
@@ -39,6 +39,46 @@ ggplot(penguins, aes(x = bill_length_mm, y = flipper_length_mm, colour = species
 ggsave("penguin_scatterplot.png")
 ```
 
+## Problem 2: 
 
+### Creating a dataframe
 
+```{r}
+set.seed(1)
 
+random_sample_df = 
+  tibble(
+    norm_sample = rnorm(10),
+    norm_sample_pos = norm_sample > 0,
+    char_vec = c("m", "n", "o", "p", "q", "r", "s", "t", "u", "v"),
+    factor_vec = factor(rep(c("low", "medium", "high"), length.out = 10))
+  )
+```
+
+### Taking the mean of each variable in the dataframe 
+
+```{r}
+mean(pull(random_sample_df, norm_sample))
+
+mean(pull(random_sample_df, norm_sample_pos))
+
+mean(pull(random_sample_df, char_vec))
+
+mean(pull(random_sample_df, factor_vec))
+```
+
+Taking the mean of the variable norm_sample works because it consists of numerical values. Similarly, taking the mean of norm_sample_pos works because R codes FALSE as 0 and TRUE as 1, so gives us a mean of 0.6 because there are 6/10 values that are greater than 0. However, taking the mean of char_vec and factor_vec does not work as char_vec is stored as text and factor_vec is stored as categories. 
+
+### Converting the logical, character, and factor variables to numeric
+
+```{r eval = FALSE}
+as.numeric(pull(random_sample_df, norm_sample_pos))
+
+as.numeric(pull(random_sample_df, char_vec))
+
+as.numeric(pull(random_sample_df, factor_vec))
+```
+
+After using the as.numeric function, for the norm_sample_pos variable the value for FALSE = 0, and the value for TRUE = 1 can be seen in the output. For the char_vec there is no equivalent numerical value for the letters and so the output now says NA for all rows. Finally, for the factor_vec variable, low = 2, medium = 3, and high = 1. 
+
+This helps explain why some variable means can be calculated and others cannot. Logical values convert cleanly to 0 and 1, so their mean can be calculated. Character values cannot be converted, so their means cannot be calculated. Factor variables have an integer assigned to each level, but these do not carry meaning so calculating the mean does not work. 
